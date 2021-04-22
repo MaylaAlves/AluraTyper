@@ -1,13 +1,13 @@
-var tempoInicial = $ (".tempo-digitacao").text();
 var campo = $ (".campo-digitacao");
-
+var tempoInicial = $ (".tempo-digitacao").text();
 //função do jQuery que chama as funções do JS qdo o documento html estiver carregado
 // função extendida: $(document).ready (function(){ abaixo função com atalho
 $(function(){
     atualizaTamanhoFrase();
     inicializaContadores();
     inicializaCronometro();
-    $("#botao-reiniciar").click(reiniciaJogo)
+    inicializaMarcadores()
+    $("#botao-reiniciar").click(reiniciaJogo);
 });
 
 function atualizaTamanhoFrase(){
@@ -31,17 +31,35 @@ function inicializaContadores(){
 }    
 
 function inicializaCronometro(){
-    var tempoRestante = $ (".tempo-digitacao").text();
+    var tempoRestante = $("#tempo-digitacao").text();
     campo.one("focus", function(){
-    var cronometroID = setInterval(function(){
-        tempoRestante--;
-        $ (".tempo-digitacao").text(tempoRestante);
-        if(tempoRestante <1){
-            campo.attr("disabled",true);
-            clearInterval(cronometroID);
+        var cronometroID = setInterval(function(){
+            tempoRestante--;
+            $ ("#tempo-digitacao").text(tempoRestante);
+            if(tempoRestante < 1){
+                campo.attr("disabled",true);
+                clearInterval(cronometroID);
+                campo.toggleClass("campo-desativado");
+            }
+        }, 1000);
+    });
+}
+
+function inicializaMarcadores(){
+    var frase = $(".frase").text();
+    campo.on("input", function(){
+        var digitado = campo.val();
+        var comparavel = frase.substr(0, digitado.length);
+
+        if(digitado==comparavel){
+            campo.addClass=("borda-verde");
+            campo.removeClass=("borda-vermelha");
+        }else{
+            campo.addClass=("borda-vermelha");
+            campo.removeClass=("borda-verde");
         }
-    }, 1000);
-});
+        
+    });
 }
 
 //$("#botao-reiniciar").on("click", function(){});
@@ -49,12 +67,15 @@ function inicializaCronometro(){
 //$("#botao-reiniciar").click(function(){});
 
 function reiniciaJogo(){
-    campo.attr("disabled", false);
+    campo.attr("disabled",false);
     campo.val("");
     $("#contador-palavras").text("0");
     $("#contador-caracteres").text("0");
-    $ ("#tempo-digitacao").text(tempoInicial);
+    $("#tempo-digitacao").text(tempoInicial);
     inicializaCronometro();
+    campo.toggleClass("campo-desativado");
+    campo.removeClass("borda-vermelha");
+    campo.removeClass("borda-verde");
 };
 
 
