@@ -1,25 +1,23 @@
-var campo = $ (".campo-digitacao");
-var tempoInicial = $ (".tempo-digitacao").text();
-//função do jQuery que chama as funções do JS qdo o documento html estiver carregado
-// função extendida: $(document).ready (function(){ abaixo função com atalho
+var campo = $(".campo-digitacao");
+var tempoInicial = $("#tempo-digitacao").text();
+
 $(function(){
     atualizaTamanhoFrase();
     inicializaContadores();
     inicializaCronometro();
-    inicializaMarcadores()
+    inicializaMarcadores();
     $("#botao-reiniciar").click(reiniciaJogo);
 });
 
-function atualizaTamanhoFrase(){
+function atualizaTamanhoFrase() {
     var frase = $(".frase").text();
     var numPalavras = frase.split(" ").length;
-
     var tamanhoFrase = $("#tamanho-frase");
     tamanhoFrase.text(numPalavras);
 }
 
-function inicializaContadores(){
-    campo.on("input", function(){
+function inicializaContadores() {
+    campo.on("input", function() {
         var conteudo = campo.val();
 
         var qtdPalavras = conteudo.split(/\S+/).length - 1;
@@ -28,37 +26,41 @@ function inicializaContadores(){
         var qtdCaracteres = conteudo.length;
         $("#contador-caracteres").text(qtdCaracteres);
     });
-}    
+}
 
-function inicializaCronometro(){
+function inicializaCronometro() {
     var tempoRestante = $("#tempo-digitacao").text();
-    campo.one("focus", function(){
-        var cronometroID = setInterval(function(){
+    campo.one("focus", function() {
+        var cronometroID = setInterval(function() {
             tempoRestante--;
-            $ ("#tempo-digitacao").text(tempoRestante);
-            if(tempoRestante < 1){
-                campo.attr("disabled",true);
+            $("#tempo-digitacao").text(tempoRestante);
+            if (tempoRestante < 1) {
                 clearInterval(cronometroID);
-                campo.toggleClass("campo-desativado");
+                finalizaJogo();
             }
         }, 1000);
     });
 }
 
-function inicializaMarcadores(){
-    var frase = $(".frase").text();
-    campo.on("input", function(){
-        var digitado = campo.val();
-        var comparavel = frase.substr(0, digitado.length);
+function finalizaJogo(){
+    campo.attr("disabled", true);
+    campo.toggleClass("campo-desativado");
+    inserePlacar();
+}
 
-        if(digitado==comparavel){
-            campo.addClass=("borda-verde");
-            campo.removeClass=("borda-vermelha");
-        }else{
-            campo.addClass=("borda-vermelha");
-            campo.removeClass=("borda-verde");
+function inicializaMarcadores() {
+    var frase = $(".frase").text();
+    campo.on("input", function() {
+        var digitado = campo.val();
+        var comparavel = frase.substr(0 , digitado.length);
+
+        if(digitado == comparavel) {
+            campo.addClass("borda-verde");
+            campo.removeClass("borda-vermelha");
+        } else {
+            campo.addClass("borda-vermelha");
+            campo.removeClass("borda-verde");
         }
-        
     });
 }
 
@@ -66,17 +68,30 @@ function inicializaMarcadores(){
 //abaixo maneira função simplificada para zerar e destravar o campo de texto
 //$("#botao-reiniciar").click(function(){});
 
-function reiniciaJogo(){
-    campo.attr("disabled",false);
+function reiniciaJogo() {
+    campo.attr("disabled", false);
     campo.val("");
     $("#contador-palavras").text("0");
     $("#contador-caracteres").text("0");
     $("#tempo-digitacao").text(tempoInicial);
+
     inicializaCronometro();
     campo.toggleClass("campo-desativado");
     campo.removeClass("borda-vermelha");
     campo.removeClass("borda-verde");
 };
 
+function inserePlacar(){
+    var corpoTabela = $(".placar").find("tbody");
+    var usuario = "Seu-nome";
+    var numPalavras = $("#contador-palavras").text();
+
+    var linha = "<tr>"+
+                    "<td>"+ usuario + "</td>"+
+                    "<td>"+ numPalavras + "</td>"+
+                "</tr>";
+
+    corpoTabela.prepend(linha);
+}
 
 
