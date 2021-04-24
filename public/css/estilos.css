@@ -12,6 +12,10 @@
     background-color: lightgray;
 }
 
+.icones{
+    vertical-align: middle;
+}
+
 .borda-verde {
     border: 3px solid green;
 }
@@ -20,6 +24,10 @@
     border: 3px solid red;
 } 
 
-.icones{
-    vertical-align: middle;
+.placar{
+    display: none;
+}
+
+body{
+    overflow: scroll; /* evitar deslocamento de elementos qdo aparce a barra de rolagem */
 }
